@@ -1,0 +1,32 @@
+{
+    "Abies alba": {
+        "f": "E5",
+        "Hmax": 50,
+        "s": 75,
+        "g": 350,
+        "Amax": 366,
+        "DDmin": 841, 
+        "DrTol": 0.23, 
+        "Nreq": 3, 
+        "ShTol": 1, 
+        "ShTol_seedings": 0.05,
+        "Wtmin": -6, 
+        "Wtmax": 5, 
+        "Br": 5
+    }, 
+    "Picea abies": {
+        "f": "E5",
+        "Hmax": 48,
+        "s": 83,
+        "g": 355,
+        "Amax": 300,
+        "DDmin": 421, 
+        "DrTol": 0.11, 
+        "Nreq": 2, 
+        "ShTol": 5, 
+        "ShTol_seedings": 0.1,
+        "Wtmin": -20, 
+        "Wtmax": 3, 
+        "Br": 2
+    }
+}
