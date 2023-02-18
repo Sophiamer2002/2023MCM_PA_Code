@@ -30,19 +30,60 @@ class simulator:
 
         self.__warm_up()
 
-
-    def __construct__shadow(self):
-        # initialize the shadow variable in grid
-        for i, j in zip(range(self.x), range(self.y)):
-            self.grid[i][j] # TODO
-
     def __update_one_year(self, weatherinfo):
+        '''
+        arg--weatherinfo:   一个字典，记录了一年之内的天气信息
+                    格式:   {
+                        "DrI": 0.4, 
+                        "GDD_E": ?,
+                        "GDD_D": ?,
+                        "Tw": ?,
+                    }
+        '''
         # update by weather info 
         # TODO
+
+        # 计算树木生长
+        self.__tree_grow()
+
+        # 计算树木传播种子
+        self.__tree_spread_seed(weatherinfo)
+
+        # 计算树木死亡
+        self.__tree_death()
+
+        # 更新shadow信息
+        self.__construct__shadow()
+
+
         return self
     
     def __warm_up(self):
         for i in range(10):
             self.__update_one_year() #TODO
 
+    def __tree_grow(self):
+        for i in range(self.x):
+            for j in range(self.y):
+                self
+        return self
+
+    def __tree_spread_seed(self, weatherinfo):
+        for i in range(self.x):
+            for j in range(self.y):
+                if not self.grid[i][j].has_tree():
+                    break
+                numseed = self.grid[i][j].get_numseed()
+
+        return self
     
+    def __tree_death(self):
+        return self
+    
+    def __construct__shadow(self):
+        # initialize the shadow variable in grid
+        for i in range(self.x):
+            for j in range(self.y):
+                self.grid[i][j] # TODO
+    
+

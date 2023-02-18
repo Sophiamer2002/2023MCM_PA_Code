@@ -12,6 +12,13 @@ class cell:
         self.tree = tree(simulator.treetypes[typeidx], simulator.treeinfo) if typeidx < simulator.numtreetype else None
         self.shadow = []
 
+
+    def has_tree(self):
+        return self.tree != None
+    
+    def get_numseed(self):
+        return 6 * self.tree.treeinfo['ShTol']
+
     
 
 
