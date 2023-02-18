@@ -29,7 +29,7 @@
         "Nreq": 2, 
         "ShTol": 5, 
         "ShTol_seedings": 0.1,
-        "Wtmin": -20, 
+        "Wtmin": -20,
         "Wtmax": 3, 
         "Br": 2,
         "cmin": 0.09,

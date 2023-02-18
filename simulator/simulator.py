@@ -1,4 +1,4 @@
-from cell import cell
+from .cell import cell
 import json
 import numpy as np
 
@@ -17,7 +17,7 @@ class simulator:
 
         # specify the tree types and their information
         with open('./tree.json', 'r') as file:
-            self.treeinfo = json.loads(file)
+            self.treeinfo = json.load(file)
         self.treetypes = treetypes
         for __type in treetypes:
             if __type not in self.treeinfo:
@@ -27,7 +27,7 @@ class simulator:
 
         # initialize the x*y cells
         self.grid = [[cell(self, i, j) for i in range(y)] for j in range(x)]
-        self.shadow = np.zeros([self.x, self.y, 50], dtype=float)
+        self.shadow = np.zeros([self.x, self.y, 50], dtype=np.float64)
         self.__construct_shadow()
 
         self.__warm_up()
@@ -36,13 +36,13 @@ class simulator:
         '''
         arg--weatherinfo:   一个字典，记录了一年之内的天气信息
                     格式:   {
-                        "DrI": 0.4, 
+                        "DrI": 0.4,
                         "GDD_E": ?,
                         "GDD_D": ?,
                         "Tw": ?,
                     }
         '''
-        # update by weather info 
+        # update by weather info
         # TODO
 
         # 计算树木crownsize
@@ -61,10 +61,10 @@ class simulator:
         self.__construct_shadow()
 
         return self
-    
+
     def __warm_up(self):
         for i in range(10):
-            self.__update_one_year() #TODO
+            self.__update_one_year()  # TODO
 
     def __tree_grow(self, weatherinfo):
         for i in range(self.x):
@@ -113,7 +113,7 @@ class simulator:
 
                 H_new = self.grid[i][j].get_height()                
                 t_slowgr = 0.0003
-                if((H_new - H)<t_slowgr):
+                if((H_new - H) < t_slowgr):
                     self.grid[i][j].increment_slowyear()
                 else:
                     self.grid[i][j].reset_slowyear()
@@ -122,7 +122,7 @@ class simulator:
     def __tree_spread_seed(self, weatherinfo):
         for i in range(self.x):
             for j in range(self.y):
-                ## judge whether there is a seed and the basic conditions
+                # judge whether there is a seed and the basic conditions
                 if not self.grid[i][j].has_tree():
                     continue
                 # P_Tw
@@ -131,7 +131,7 @@ class simulator:
                 # GDD
                 if (self.grid[i][j].get_DDmin()> self.grid[i][j].get_GDD(weatherinfo)):
                     continue
-                
+
                 numseed = self.grid[i][j].get_numseed()
                 for _ in range(numseed):
                     a = np.random.randint(self.x)
@@ -151,7 +151,7 @@ class simulator:
                         if (cest > pest):
                             self.grid[a][b] = cell(self, a, b, isRandom=False, treetype=self.grid[i][j].get_treetype())
         return self
-    
+
     def __tree_death(self):
         for i in range(self.x):
             for j in range(self.y):
@@ -170,27 +170,29 @@ class simulator:
                     P_0 = 0 if(a<P_dist) else 1
                     P_mort = np.max(P_g, P_0)
                     if(P_mort > b):
-                        del self.grid[i][j]
+                        self.grid[i][j].remove_tree()
 
-        return self
-    
+
     def __construct_shadow(self):
         # initialize the shadow variable in grid
-        self.shadow = np.zeros([self.x, self.y, 50], dtype=float)
+        self.shadow = np.zeros([self.x, self.y, 50], dtype=np.float64)
 
-        X, Y = np.meshgrid(range(self.x), range(self.y))
+        Y, X = np.meshgrid(range(self.y), range(self.x))
         for i in range(self.x):
             for j in range(self.y):
-                if self.grid[i][j].has_tree():
-                    r = self.grid[i][j].get_width()
-                    H = int(self.grid[i][j].get_height())
-                    h = int(self.grid[i][j].get_height() - self.grid[i][j].get_cl())
+                if not self.grid[i][j].has_tree():
+                    continue
+                r = self.grid[i][j].get_width()
+                H = int(self.grid[i][j].get_height())
+                h = int(self.grid[i][j].get_height() - self.grid[i][j].get_cl())
 
-                    temp_X = np.abs(X - i)
-                    temp_Y = np.abs(Y - i)
-                    temp = -(temp_X + temp_Y - r)
+                temp_X = np.abs(X - i)
+                temp_Y = np.abs(Y - i)
+                temp = -(temp_X + temp_Y - r)
+                temp = np.exp(temp) * ((temp>-1).astype(np.int64))
 
-                    self.shadow[:, :, h:H] += np.exp(temp[temp>-1])
+                self.shadow[:, :, h:H] += temp[:, :, np.newaxis]
+        self.shadow[self.shadow > 1] = 1
 
     def __tree_crownsize(self):
         count1 = 0
@@ -249,7 +251,3 @@ class simulator:
             current += self.grid[i][j-1].get_DrTol() * w_1
             total += w_1
         return (current/total)
-            
-
-    
-

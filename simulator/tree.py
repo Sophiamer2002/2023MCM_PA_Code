@@ -33,7 +33,7 @@ class tree:
         self.age = 0
         self.slowyears = 0
         self.diameter = 0.03
-        self.crownsize = treeinfo['cs']
+        self.crownsize = 0.8*self.treeinfo['cmax'] + 0.2 * self.treeinfo['cmin']
 
     def random_init(self):
         # TODO
