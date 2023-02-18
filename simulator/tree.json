@@ -12,7 +12,11 @@
         "ShTol_seedings": 0.05,
         "Wtmin": -6, 
         "Wtmax": 5, 
-        "Br": 5
+        "Br": 5,
+        "cmin": 0.09,
+        "cmax": 0.53,
+        "a": 1.5,
+        "ff": 0.45
     }, 
     "Picea abies": {
         "f": "E5",
@@ -27,6 +31,10 @@
         "ShTol_seedings": 0.1,
         "Wtmin": -20, 
         "Wtmax": 3, 
-        "Br": 2
+        "Br": 2,
+        "cmin": 0.09,
+        "cmax": 0.53,
+        "a": 1.5,
+        "ff": 0.45
     }
 }
