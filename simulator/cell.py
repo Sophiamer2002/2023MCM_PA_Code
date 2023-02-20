@@ -1,3 +1,4 @@
+import numpy as np
 import numpy.random as rd
 from simulator import simulator
 from .tree import tree
@@ -25,7 +26,12 @@ class cell:
 
     # get function
     def get_numseed(self):
-        return 6 * self.tree.treeinfo['ShTol']
+        if(self.tree.age < 5):
+            return 0
+        seed_num = rd.random() *6*min(1, self.simulator.x * self.simulator.y/1000) * self.tree.treeinfo['ShTol']
+        frac = seed_num - int(seed_num)
+        seed_num = int(seed_num) + (1 if rd.random() < frac else 0)
+        return seed_num
 
     def get_gs(self):
         return self.tree.treeinfo['g']
@@ -63,10 +69,6 @@ class cell:
     def get_height(self):
         return self.tree.get_height()
 
-    def get_seasonal(self):
-        '''evergreen or deciduous, return a char'''
-        return self.tree.treeinfo['f'][0]
-
     def get_diameter(self):
         return self.tree.diameter
 
@@ -80,11 +82,20 @@ class cell:
         return self.tree.treeinfo['Wtmax']
 
     def get_ShTol_seedings(self):
-        return self.tree.treeinfo['ShTol_seedings']
+        # return self.tree.treeinfo['ShTol_seedings']
+
+        origin = self.tree.treeinfo['ShTol_seedings']
+        # any little changes to 0.5 will cause the simulation to be unstable
+        # and 0.5 is also not a stable one
+        newone = (-np.ln(origin) - 0.5)/5
+        return newone
 
     def get_width(self):
         # 辐射到的曼哈顿距离
-        return pow(pow(self.tree.diameter, self.tree.treeinfo['a']) * self.tree.treeinfo['ff'] / self.get_height(), 0.5) - 0.5
+        # return pow(pow(self.tree.diameter, self.tree.treeinfo['a']) * self.tree.treeinfo['ff'] / self.get_height(), 0.5) - 0.5
+
+        # 为了补偿树叶的稀疏性，将辐射到的曼哈顿距离乘以20
+        return pow(pow(self.tree.diameter, self.tree.treeinfo['a']) * self.tree.treeinfo['ff'] / self.get_height(), 0.5) * 20 - 0.5
 
     def get_age(self):
         return self.tree.age

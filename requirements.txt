@@ -46,3 +46,9 @@ scipy==1.9.3
     # via seaborn
 seaborn==0.10.1
     # via -r requirements.in
+
+cdsapi==0.5.1
+    # climate data store
+
+pygrib==2.1.4
+    # reading .grib data

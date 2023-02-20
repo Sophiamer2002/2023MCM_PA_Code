@@ -40,8 +40,9 @@ class tree:
         self.age = rd.randint(0, self.treeinfo['Amax'])
 
     def get_height(self):
-        # TODO
-        return (1.37 + (self.treeinfo['Hmax'] - 1.37) * (1 - np.exp(-self.treeinfo['s'] * self.diameter/(self.treeinfo['Hmax'] - 1.37)))    )
+        # TODO may be done
+        # return (1.37 + (self.treeinfo['Hmax'] - 1.37) * (1 - np.exp(-self.treeinfo['s'] * self.diameter/(self.treeinfo['Hmax'] - 1.37)))    )
+        return 1.37 + 0.63*self.treeinfo['s']*self.diameter - (self.treeinfo['s']*self.diameter)**2/(10*(self.treeinfo['Hmax'] - 1.37))
     
     def get_leafarea(self):
         return pow(self.diameter, self.treeinfo['a']) * self.crownsize * self.treeinfo['ff']
