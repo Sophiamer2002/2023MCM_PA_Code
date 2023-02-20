@@ -21,5 +21,8 @@ def getGDDandTw(lat, lon, filename):
 
     return pd.DataFrame({'GDD_E': GDD_E, 'GDD_D': GDD_D, 'Tw': Tw})
 
+def getparticipation(lat, lon, filename):
+    pass
+
 def main():
-    
+    pass

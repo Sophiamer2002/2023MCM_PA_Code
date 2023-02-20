@@ -164,8 +164,8 @@ class simulator:
     def __tree_spread_seed(self, weatherinfo, record):
         Tw = weatherinfo['Tw']
         # record information
-        total_seed = {species: 0 for species in self.species}
-        success_seed = {species: 0 for species in self.species}
+        total_seed = {species: 0 for species in self.treetypes}
+        success_seed = {species: 0 for species in self.treetypes}
 
         for i in range(self.x):
             for j in range(self.y):
@@ -177,7 +177,6 @@ class simulator:
                 # if (self.grid[i][j].get_wtmin() >= weatherinfo['Tw']) or (self.grid[i][j].get_wtmax() <= weatherinfo['Tw']):
                 #     continue
 
-                total_seed[self.grid[i][j].get_treetype()] += 1
                 # GDD
                 if (self.grid[i][j].get_DDmin()> self.grid[i][j].get_GDD(weatherinfo)):
                     continue
@@ -189,6 +188,7 @@ class simulator:
                     if(self.grid[a][b].has_tree()):
                         continue
                     
+                    total_seed[self.grid[i][j].get_treetype()] += 1
                     # consider the temperature impact here
                     # P_Tw
                     wtmin = self.grid[i][j].get_wtmin()
@@ -223,8 +223,12 @@ class simulator:
                             success_seed[self.grid[i][j].get_treetype()] += 1
             
         if record:
-            self.records['total_seed'].append(total_seed)
-            self.records['success_seed'].append(success_seed)
+            self.records['num_seeds'].append(total_seed)
+            success_seed_rate = {
+                species: success_seed[species]/total_seed[species] if total_seed[species] != 0 else 0 
+                for species in self.treetypes
+            }
+            self.records['seed_success_rate'].append(success_seed_rate)
 
         print('total_seed: ', total_seed)
         print('success_seed: ', success_seed)
@@ -241,7 +245,9 @@ class simulator:
                     k_SlowGrTime = 3
                     SlowGr = self.grid[i][j].get_slowyears()
 
-                    P_stressed = p_slowgr if(SlowGr >= k_SlowGrTime) else 0
+                    # P_stressed = p_slowgr if(SlowGr >= k_SlowGrTime) else 0
+                    k = 2
+                    P_stressed = min(1, (np.exp(k * SlowGr) - 1)/(np.exp(k * k_SlowGrTime) - 1)) * p_slowgr
                     P_g = P_age + (1 - P_age) * P_stressed
                     
                     P_0 = 0 if(rd.random() > P_dist) else 1
@@ -305,13 +311,13 @@ class simulator:
     def __record(self):
         
         # record tree type
-        self.record['treetype'].append(
-            [[Acell.get_treetype() for Acell in Arow] for Arow in self.grid]
+        self.records['treetype'].append(
+            [[(Acell.get_treetype() if Acell.has_tree() else 'No tree') for Acell in Arow] for Arow in self.grid]
         )
 
         # record tree height
-        self.record['height'].append(
-            [[Acell.get_height() for Acell in Arow] for Arow in self.grid]
+        self.records['treeheight'].append(
+            [[(Acell.get_height() if Acell.has_tree() else 'No tree') for Acell in Arow] for Arow in self.grid]
         )
 
         # record tree species number
@@ -320,7 +326,9 @@ class simulator:
             for j in range(self.y):
                 if self.grid[i][j].has_tree():
                     numspecies[self.grid[i][j].get_treetype()] += 1
-        self.record['numspecies'].append(numspecies)
+
+        numspecies['No tree'] = self.x * self.y - sum(numspecies.values())
+        self.records['numspecies'].append(numspecies)
 
 
 

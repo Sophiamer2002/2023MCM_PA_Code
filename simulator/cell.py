@@ -11,7 +11,7 @@ class cell:
         self.y = j
 
         if isRandom:
-            typeidx = rd.randint(0, simulator.numtreetype * 2)
+            typeidx = rd.randint(0, simulator.numtreetype)
             self.tree = tree(simulator.treetypes[typeidx], simulator.treeinfo) if typeidx < simulator.numtreetype else None
         else:
             self.tree = tree(treetype, simulator.treeinfo)
@@ -87,7 +87,7 @@ class cell:
         origin = self.tree.treeinfo['ShTol_seedings']
         # any little changes to 0.5 will cause the simulation to be unstable
         # and 0.5 is also not a stable one
-        newone = (-np.ln(origin) - 0.5)/5
+        newone = (-np.log(origin) - 0.5)/5
         return newone
 
     def get_width(self):
