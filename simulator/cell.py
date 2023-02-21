@@ -29,6 +29,10 @@ class cell:
         if(self.tree.age < 5):
             return 0
         seed_num = rd.random() *6*min(1, self.simulator.x * self.simulator.y/1000) * self.tree.treeinfo['ShTol']
+
+        # consider the impact of pollution
+        seed_num *= (1 - self.simulator.PollutionIndex) ** 2
+
         frac = seed_num - int(seed_num)
         seed_num = int(seed_num) + (1 if rd.random() < frac else 0)
         return seed_num

@@ -44,6 +44,9 @@ class simulator:
             "seed_success_rate": []
         }
 
+        # Set the probability of death due to pollution
+        self.PollutionIndex = 0.05
+
         self.__construct_shadow()
 
         # self.__warm_up()
@@ -250,7 +253,7 @@ class simulator:
                     P_stressed = min(1, (np.exp(k * SlowGr) - 1)/(np.exp(k * k_SlowGrTime) - 1)) * p_slowgr
                     P_g = P_age + (1 - P_age) * P_stressed
                     
-                    P_0 = 0 if(rd.random() > P_dist) else 1
+                    P_0 = 0 if(rd.random() > P_dist + self.Pollution_index) else 1
                     P_mort = max(P_g, P_0)
                     if(P_mort > rd.random()):
                         self.grid[i][j].remove_tree()

@@ -66,7 +66,7 @@
         "DrTol": 0.45,
         "Nreq": 1,
         "ShTol": 5,
-        "ShTol_seedings": 0.1, 
+        "ShTol_seedings": 0.1,
         "Wtmin": 0,
         "Wtmax": 14,
         "Br": 1, 
